@@ -49,8 +49,8 @@ const DEFAULT_THEME = {
 };
 
 const INITIAL_VIEW_STATE = {
-  longitude: 8.5338278, //-74,
-  latitude: 47.39784,//40.72,
+  longitude: 8.538329259676859, // 8.5338278, //-74,
+  latitude: 47.383313421557524, //47.39784,//40.72,
   zoom: 13,
   pitch: 45,
   bearing: 0
@@ -201,7 +201,7 @@ export default function App({
 
         </div>
         <div style={{ position: 'absolute', top:'25%', right: 5 }}>
-          <a style={{color: 'blue', background: 'yellow', fontSize: '22px'}} href='https://tibaldo.ch'>Info</a>
+          <a style={{color: 'blue', background: 'yellow', fontSize: '22px'}} href='https://tibaldo.ch/web/2024/01/01/publibike-movement-tracking.html'>Info</a>
 
         </div>
 
