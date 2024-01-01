@@ -14,6 +14,8 @@ partner_url = 'https://api.publibike.ch/v1/public/partner/stations/'
 stations = pb_station.get_station_dict()
 
 
+bike_types = {}
+
 # For each station in data obtained via partner_url we extract the
 # parked bikes. We create a dictionary, where each entry (station) 
 # contains a set wihth all bikes parked there
@@ -28,6 +30,10 @@ def get_and_process_stations_to_idmap(file_path):
             parkedVehicles = set()
             for vehicle in station['vehicles']:
                 parkedVehicles.add(vehicle['name'])
+                if(vehicle['name']=='104951' or vehicle['name']=='504027'): # A GOLDEN publibike has been found
+                    bike_types[vehicle['name']] = 3
+                else:
+                    bike_types[vehicle['name']] = vehicle['type']['id'] # 1. Classic bike 2. Electric bike 3. GOLDEN bike
             station_map[station['id']] = parkedVehicles
         return station_map
 
@@ -92,28 +98,20 @@ for i in range(len(files_paths)-1):
                     #     break
 
 
-                    # route = mapbox_utilities.get_route(start_lat, start_lon, end_lat, end_lon) #FIXME my route
-
                     #logger.info(f"TRIP COMPLETED from {in_transit[bike_id].start_id} to {station_id} | {end_time-start_time}")
-                    in_transit.pop(bike_id)
+                    
+                    # if bike_id == '104951' or bike_id == '504027':
+                    #     print("GOLD")
 
                     json_trip = {"start_lat":start_lat, "start_lon":start_lon,
                                  "end_lat":end_lat, "end_lon":end_lon,
-                                 "start_time":start_time, "end_time":end_time}
+                                 "start_time":start_time, "end_time":end_time,
+                                 "bike_type":bike_types[bike_id]}
                     json_trips.append(json_trip)
-
-                    # TODO save start and end times as well
-                    #FIXME write as json file start_time, end_time, start_location, end_location
-                    # with open('routes.csv', 'a', newline='') as csvfile:
-                    #     writer = csv.writer(csvfile)
-                    #     writer.writerow(route)
+                    in_transit.pop(bike_id)
 
 
     logger.info(f"... completed one scraping loop | bikes in transit: {len(in_transit)}")
-    # next_update = datetime.now()+timedelta(minutes=1)
-    # old_status = new_status
-    # new_status = get_and_process_stations_to_idmap()
-
 
     #TODO remove slow trips
 

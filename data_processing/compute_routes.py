@@ -15,7 +15,7 @@ graph = ox.graph_from_bbox(north, south, east, west, network_type='bike', simpli
 initial_time = datetime.strptime("20231226_140001", '%Y%m%d_%H%M%S')
 
 
-def subdivide_path(path, start_time, end_time):
+def subdivide_path(path, start_time, end_time, bike_type=1):
      # Convert start_time and end_time to datetime objects
     start_datetime = datetime.strptime(start_time, '%Y%m%d_%H%M%S')
     end_datetime = datetime.strptime(end_time, '%Y%m%d_%H%M%S')
@@ -30,7 +30,7 @@ def subdivide_path(path, start_time, end_time):
 
     total_speed = total_distance/(total_time_delta+timedelta(seconds=1)).total_seconds()
 
-    json_result = {"vendor":0, "path":[], "timestamps":[]}
+    json_result = {"vendor":bike_type, "path":[], "timestamps":[]}
 
     crossed_distance = 0
     current_time = start_datetime
@@ -96,11 +96,11 @@ with open("completed_trips.json", 'r') as f:
                 route = get_bicycle_route((trip['start_lat'], trip['start_lon']),(trip['end_lat'], trip['end_lon']))
                 if len(route)==0:
                     continue
-                timed_route = subdivide_path(route, trip['start_time'], trip['end_time'])
+                timed_route = subdivide_path(route, trip['start_time'], trip['end_time'], trip['bike_type'])
                 # total_routes.append(timed_route)
                 # print(timed_route)
                 with open("segmented_routes.json", "a") as json_file:
-                    json.dump(timed_route, json_file, indent=2)
+                    json.dump(timed_route, json_file, indent=1)
                     json_file.write(',\n') 
 
         #         tmp+=1
